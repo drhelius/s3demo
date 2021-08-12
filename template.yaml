@@ -60,13 +60,13 @@ objects:
             imagePullPolicy: Always
         restartPolicy: Always
 
-# - kind: Secret
-#   apiVersion: v1
-#   metadata:
-#     name: s3-credentials
-#   data:
-#     s3-access-key: eHh4
-#     s3-host: eHh4
-#     s3-region: eHh4
-#     s3-secret-key: eHh4
-#   type: Opaque
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: s3-credentials
+  data:
+    s3-access-key: eHh4
+    s3-host: eHh4
+    s3-region: eHh4
+    s3-secret-key: eHh4
+  type: Opaque

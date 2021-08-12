@@ -1,33 +1,82 @@
 from boto3.session import Session
 from botocore.client import Config
-from botocore.handlers import set_list_objects_encoding_type_url
+from boto.s3.key import Key
 
 import os
 import time
 import boto3
+import uuid
+
+#############
+def list_buckets_and_objects():
+    buckets = s3.list_buckets()
+
+    print("> Listing Buckets:")
+
+    response = s3.list_buckets()
+    for bucket in response['Buckets']:
+        print("   " + bucket['Name'])
+
+        objects = s3.list_objects(Bucket=bucket['Name'])
+
+        if "Contents" in objects:
+            print("    Listing objects in bucket:")
+            for obj in objects['Contents']:
+                print("     Key: " + obj['Key'] + ". Size: "+ str(obj['Size']))
+            print("    End of bucket")
+        else:
+            print("    This bucket is empty")
+#############
+def list_buckets():
+    buckets = s3.list_buckets()
+
+    print("> Listing Buckets:")
+
+    for bucket in buckets['Buckets']:
+        print(bucket['Name'])
+#############
+def create_demo_bucket():
+    print("> Creating new '" + bucket_name + "' bucket")
+    bucket = s3.create_bucket(Bucket=bucket_name,
+                             CreateBucketConfiguration={'LocationConstraint': s3_region})
+
+    print("> Creating new 'demo' object")
+    s3.put_object(Body=b'This is a test of S3', Bucket=bucket_name, Key='demo')
+#############
+def delete_demo_bucket():
+    print("> Deleting 'demo' object in " + bucket_name + " bucket")
+    s3.delete_object(Bucket=bucket_name, Key='demo')
+
+    print("> Deleting " + bucket_name + " bucket")
+    s3.delete_bucket(Bucket=bucket_name)
+#############
 
 s3_access_key = os.environ['S3_ACCESS_KEY']
 s3_secret_key = os.environ['S3_SECRET_KEY']
 s3_host = os.environ['S3_HOST']
 s3_region = os.environ['S3_REGION']
 
+bucket_name = uuid.uuid4().hex
+
 #boto3.set_stream_logger('')
 
-session = Session(aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key, region_name=s3_region)
+session = boto3.session.Session()
 
-session.events.unregister('before-parameter-build.s3.ListObjects', set_list_objects_encoding_type_url)
-
-s3 = session.resource('s3', endpoint_url=s3_host, config=Config(signature_version='s3v4'))
+s3 = session.client(
+    service_name='s3',
+    aws_access_key_id=s3_access_key,
+    aws_secret_access_key=s3_secret_key,
+    endpoint_url=s3_host,
+)
 
 while True:
-    print(">> BEGIN")
-    buckets = s3.buckets.all()
-    for bucket in buckets:
-        print("#### BUCKET #####")
-        print(bucket)
-        print("++++ OBJECTS ++++")
-        for f in bucket.objects.all():
-            print(f.key)
-        print("#################")
-    print(">> END")
+    print("> BEGIN")
+
+    list_buckets_and_objects()
+    create_demo_bucket()
+    list_buckets_and_objects()
+    delete_demo_bucket()
+    list_buckets_and_objects()
+
+    print("> END")
     time.sleep(60)
