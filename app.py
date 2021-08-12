@@ -5,6 +5,7 @@ import os
 import time
 import boto3
 import uuid
+import urllib3
 
 #############
 def list_buckets_and_objects():
@@ -14,17 +15,17 @@ def list_buckets_and_objects():
 
     response = s3.list_buckets()
     for bucket in response['Buckets']:
-        print("   " + bucket['Name'])
+        print("   + " + bucket['Name'])
 
         objects = s3.list_objects(Bucket=bucket['Name'])
 
         if "Contents" in objects:
             print("    Listing objects in bucket:")
             for obj in objects['Contents']:
-                print("     Key: " + obj['Key'] + ". Size: "+ str(obj['Size']))
+                print("     - Key: " + obj['Key'] + ". Size: "+ str(obj['Size']))
             print("    End of bucket")
         else:
-            print("    This bucket is empty")
+            print("     This bucket is empty")
 #############
 def create_demo_bucket():
     print("> Creating new bucket '" + bucket_name + "'")
@@ -42,10 +43,11 @@ def delete_demo_bucket():
     s3.delete_bucket(Bucket=bucket_name)
 #############
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 s3_access_key = os.environ['S3_ACCESS_KEY']
 s3_secret_key = os.environ['S3_SECRET_KEY']
 s3_host = os.environ['S3_HOST']
-s3_ssl_verify = os.getenv("S3_SSL_VERIFY", 'True').lower() in ('false', '0', 'f')
 
 if "S3_REGION" in os.environ:
     s3_region = os.environ['S3_REGION']
@@ -63,7 +65,7 @@ s3 = session.client(
     aws_access_key_id=s3_access_key,
     aws_secret_access_key=s3_secret_key,
     endpoint_url=s3_host,
-    verify=s3_ssl_verify
+    verify=False
 )
 
 while True:

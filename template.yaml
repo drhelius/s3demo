@@ -57,11 +57,6 @@ objects:
                   secretKeyRef:
                     name: s3-credentials
                     key: s3-region
-              - name: S3_SSL_VERIFY
-                valueFrom:
-                  secretKeyRef:
-                    name: s3-credentials
-                    key: s3-ssl-verify
             imagePullPolicy: Always
         restartPolicy: Always
 
@@ -74,5 +69,4 @@ objects:
     s3-host: eHh4
     s3-region: eHh4
     s3-secret-key: eHh4
-    s3-ssl-verify: VHJ1Z
   type: Opaque
