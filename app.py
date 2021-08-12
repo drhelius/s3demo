@@ -36,7 +36,7 @@ def list_buckets():
         print(bucket['Name'])
 #############
 def create_demo_bucket():
-    print("> Creating new bukcet '" + bucket_name + "'")
+    print("> Creating new bucket '" + bucket_name + "'")
     bucket = s3.create_bucket(Bucket=bucket_name,
                              CreateBucketConfiguration={'LocationConstraint': s3_region})
 
@@ -83,5 +83,5 @@ while True:
     list_buckets_and_objects()
 
     print("> END")
-    
+
     time.sleep(60)
