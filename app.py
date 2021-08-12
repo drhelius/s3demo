@@ -26,14 +26,6 @@ def list_buckets_and_objects():
         else:
             print("    This bucket is empty")
 #############
-def list_buckets():
-    buckets = s3.list_buckets()
-
-    print("> Listing Buckets:")
-
-    for bucket in buckets['Buckets']:
-        print(bucket['Name'])
-#############
 def create_demo_bucket():
     print("> Creating new bucket '" + bucket_name + "'")
     bucket = s3.create_bucket(Bucket=bucket_name,
