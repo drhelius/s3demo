@@ -1,6 +1,5 @@
 from boto3.session import Session
 from botocore.client import Config
-from boto.s3.key import Key
 
 import os
 import time
