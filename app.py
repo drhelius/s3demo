@@ -4,7 +4,7 @@ import os
 
 access_key = os.environ['ACCESS_KEY']
 secret_key = os.environ['SECRET_KEY']
-s3_host = os.environ['https://s3.eu-west-1.amazonaws.com']
+s3_host = os.environ['S3_HOST']
 
 conn = boto.connect_s3(
         aws_access_key_id = access_key,
