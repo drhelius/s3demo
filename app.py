@@ -36,25 +36,29 @@ def list_buckets():
         print(bucket['Name'])
 #############
 def create_demo_bucket():
-    print("> Creating new '" + bucket_name + "' bucket")
+    print("> Creating new bukcet '" + bucket_name + "'")
     bucket = s3.create_bucket(Bucket=bucket_name,
                              CreateBucketConfiguration={'LocationConstraint': s3_region})
 
-    print("> Creating new 'demo' object")
+    print("> Creating new object 'demo'")
     s3.put_object(Body=b'This is a test of S3', Bucket=bucket_name, Key='demo')
 #############
 def delete_demo_bucket():
-    print("> Deleting 'demo' object in " + bucket_name + " bucket")
+    print("> Deleting object 'demo' in bucket '" + bucket_name + "'")
     s3.delete_object(Bucket=bucket_name, Key='demo')
 
-    print("> Deleting " + bucket_name + " bucket")
+    print("> Deleting bucket '" + bucket_name + "'")
     s3.delete_bucket(Bucket=bucket_name)
 #############
 
 s3_access_key = os.environ['S3_ACCESS_KEY']
 s3_secret_key = os.environ['S3_SECRET_KEY']
 s3_host = os.environ['S3_HOST']
-s3_region = os.environ['S3_REGION']
+
+if "S3_REGION" in os.environ:
+    s3_region = os.environ['S3_REGION']
+else:
+    s3_region = ""
 
 bucket_name = uuid.uuid4().hex
 
@@ -79,4 +83,5 @@ while True:
     list_buckets_and_objects()
 
     print("> END")
+    
     time.sleep(60)
