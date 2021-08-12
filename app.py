@@ -45,6 +45,7 @@ def delete_demo_bucket():
 s3_access_key = os.environ['S3_ACCESS_KEY']
 s3_secret_key = os.environ['S3_SECRET_KEY']
 s3_host = os.environ['S3_HOST']
+s3_ssl_verify = os.getenv("S3_SSL_VERIFY", 'True').lower() in ('false', '0', 'f')
 
 if "S3_REGION" in os.environ:
     s3_region = os.environ['S3_REGION']
@@ -62,6 +63,7 @@ s3 = session.client(
     aws_access_key_id=s3_access_key,
     aws_secret_access_key=s3_secret_key,
     endpoint_url=s3_host,
+    verify=s3_ssl_verify
 )
 
 while True:
