@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: s3demo
+metadata:
+  annotations:
+    description: A Python S3 demo.
+    iconClass: icon-python
+    openshift.io/display-name: A Python S3 demo.
+    openshift.io/documentation-url: https://github.com/drhelius/s3demo
+    openshift.io/provider-display-name: Ignacio Sánchez
+    openshift.io/support-url: https://github.com/drhelius/s3demo
+    tags: s3,python
+  labels:
+    template: s3demo
+  name: grpc-demo
+objects:
+
+- kind: Deployment
+  apiVersion: apps/v1
+  metadata:
+    name: s3demo
+    labels:
+      app: s3demo
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deployment: s3demo
+    template:
+      metadata:
+        labels:
+          deployment: s3demo
+      spec:
+        containers:
+          - name: s3demo
+            image: >-
+              quay.io/isanchez/s3demo:latest
+            env:
+              - name: S3_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: s3-credentials
+                    key: s3-access-key
+              - name: S3_SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: s3-credentials
+                    key: s3-secret-key
+              - name: S3_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: s3-credentials
+                    key: s3-host
+              - name: S3_REGION
+                valueFrom:
+                  secretKeyRef:
+                    name: s3-credentials
+                    key: s3-region
+            imagePullPolicy: Always
+        restartPolicy: Always
+
+# - kind: Secret
+#   apiVersion: v1
+#   metadata:
+#     name: s3-credentials
+#   data:
+#     s3-access-key: eHh4
+#     s3-host: eHh4
+#     s3-region: eHh4
+#     s3-secret-key: eHh4
+#   type: Opaque
